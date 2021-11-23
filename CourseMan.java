@@ -90,7 +90,6 @@ class Student{
     public String emailAddress;
     public String country;
     public  HashMap<String, Integer> marks = new HashMap<>(); 
-    public List<TestDetails> testActivity = new ArrayList<TestDetails>();
     Scanner in = new Scanner(System.in);
 
         
@@ -125,17 +124,14 @@ class Student{
     		t =c1.allTest.get(i); 
     		if(t.testSituation.equals("Available"))
     		{
-    			if(this.testActivity.get(i).attemptStatus.equals("Unattempted")); 
-    			{
-    				avlTest.add(this.testActivity.get(i).name);
-    			}
+    			avlTest.add(t.testName);
     		} 
     		else
     		{
     			;
     		}
     	}
-        return avlTest;
+    	return avlTest;
     }
     String viewEnrolledCourse(){
         return courseName;
@@ -147,7 +143,7 @@ class Student{
         System.out.println("Country: "+country);
         System.out.println("Quiz: "+marks.get("Quiz")+" "+"Mid semester Examination: "+marks.get("Midsemester Examination")+" "+"Comprehensive Examination: "+marks.get("Comprehensive Examination"));
     }
-    void allRegisteredStudents(Course c1){ 
+    static void allRegisteredStudents(Course c1){ 
     	for(int i=0; i<c1.nameofStudents.size(); i++)
     	{
     		System.out.println(c1.nameofStudents.get(i)+" "+ c1.idNoofStudentsenrolled.get(i));
@@ -214,14 +210,10 @@ class Teacher{
         testMarks.put("Comprehensive Examination",st.marks.get("Comprehensive Examination"));
         return testMarks;
     }
-    void createTest(String testName, float weightagePercent , int duration , int noOfQuestions, Course c1){
+    void createTest(String testName, float weightagePercent , int duration , int noOfQuestions, Course c1,ArrayList<Character> anskey){
         Test t = new Test(testName,weightagePercent ,duration ,noOfQuestions); 
-        c1.allTest.add(t);
+        c1.allTest.add(t); 
         System.out.println("New Test Created");
-        ArrayList<Character> anskey=new ArrayList<>();
-        for(int i=0;i<noOfQuestions;i++){
-        anskey.add('a');
-        }
         t.setKey(anskey);
     }
 }
@@ -234,20 +226,85 @@ class CourseMan {
 		Teacher AD = new Teacher("Amit Dua", "amit.d12"); 
 		Student stud1 = new Student("Harshit","2020A7PS0057P","f20200057","India"); 
 		Student stud2 = new Student("Rachit","2020A7PS0033P","f20200033","India");
-        OOP.nameofStudents.add(stud1.name);
+        OOP.nameofStudents.add(stud1.name); 
         OOP.idNoofStudentsenrolled.add(stud1.idNumber);
         OOP.nameofStudents.add(stud2.name);
-        OOP.idNoofStudentsenrolled.add(stud2.idNumber);
-		AD.createTest("Quiz",30.0f, 1, 10, OOP);
-        AD.createTest("Midsemester Examination",30.0f, 2, 12, OOP);
-        AD.createTest("Comprehensive Examination",40.0f, 3, 15, OOP);
+        OOP.idNoofStudentsenrolled.add(stud2.idNumber); 
         stud1.viewPersonalDetails();
-        stud2.viewPersonalDetails();
-        stud1.allRegisteredStudents(OOP);
-        System.out.println(stud1.availableTests(OOP));
+        System.out.print("\n\n");
+        stud2.viewPersonalDetails(); 
+        System.out.print("\n\n"); 
+        AD.courseDetails();
+        System.out.print("\n\n");
+		ArrayList<Character> ansq = new ArrayList<Character>();
+		ansq.add('a');
+		ansq.add('b');
+		ansq.add('c');
+		ansq.add('c');
+		ansq.add('d');
+		ansq.add('N');
+		ansq.add('a');
+		ansq.add('b');
+		ansq.add('c');
+		ansq.add('N'); 
+		AD.createTest("Quiz",30.0f, 1, 10, OOP,ansq); 
+		stud1.takeTest(OOP); 
+		stud2.takeTest(OOP); 
+        ArrayList<Character> ansm = new ArrayList<Character>();
+		ansm.add('a');
+		ansm.add('b');
+		ansm.add('c');
+		ansm.add('N');
+		ansm.add('d');
+		ansm.add('a');
+		ansm.add('a');
+		ansm.add('N');
+		ansm.add('c');
+		ansm.add('d');
+		ansm.add('a');
+		ansm.add('b');
+		ansm.add('N');
+		ansm.add('N');
+		ansm.add('d');
+		AD.createTest("Midsemester Examination",30.0f, 2, 12, OOP,ansm);
+		stud1.takeTest(OOP); 
+		stud2.takeTest(OOP); 
+        ArrayList<Character> ansc = new ArrayList<Character>();
+		ansc.add('a');
+		ansc.add('b');
+		ansc.add('c');
+		ansc.add('N');
+		ansc.add('N');
+		ansc.add('a');
+		ansc.add('a');
+		ansc.add('b');
+		ansc.add('c');
+		ansc.add('N');
+		ansc.add('a');
+		ansc.add('b');
+		ansc.add('c');
+		ansc.add('c');
+		ansc.add('N');
+		ansc.add('a');
+		ansc.add('a');
+		ansc.add('b');
+		ansc.add('N');
+		ansc.add('d'); 
+		AD.createTest("Comprehensive Examination",40.0f, 3, 15, OOP,ansc); 
+		stud1.takeTest(OOP); 
+		stud2.takeTest(OOP); 
+        Student.allRegisteredStudents(OOP);
+        System.out.print("\n\n");
+        ArrayList<String> avltest = stud1.availableTests(OOP);
+        for(int i =0; i<avltest.size();i++)
+    	{
+    		System.out.println(avltest.get(i));
+    	} 
         Map<String,Integer> mp =new HashMap<>();
         mp=AD.viewMarks(stud2);
         System.out.println(mp);
+        System.out.print("\n\n"); 
+        stud1.viewEnrolledCourse();
+        
 	}
-
 }
