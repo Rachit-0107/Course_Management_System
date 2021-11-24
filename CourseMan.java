@@ -293,7 +293,7 @@ class CourseMan {
         System.out.println("The teacher "+ AD.name +" takes these courses");
         AD.courseDetails();
         System.out.print("\n\n"); 
-        System.out.println(stud1.name+ " is reistered in the following course"); 
+        System.out.println(stud1.name+ " is registered in the following course"); 
         stud1.viewEnrolledCourse();
 		ArrayList<Character> ansq = new ArrayList<Character>();
 		ansq.add('a');
@@ -385,15 +385,7 @@ class CourseMan {
 		System.out.println("For "+stud1.name);
 		stud1.takeTest(OOP);
 		System.out.println("For "+stud2.name);
-		stud2.takeTest(OOP); 
-		for(int i =0; i<OOP.allTest.size();i++)
-		{
-			if(!OOP.allTest.get(i).testName.equals("Comprehensive_Examination"))
-			{
-				OOP.allTest.get(i).testSituation = "Unavailable";
-			}
-		} 
-		
+		stud2.takeTest(OOP);
 		if(!stud3.name.equals(""))
 		{
 			int key = 0;
@@ -411,6 +403,7 @@ class CourseMan {
 				switch(key)
 				{
 					case 1: stud3.viewPersonalDetails(); 
+							System.out.print("\n\n");
 							break; 
 					case 2: {
 								Map<String,Integer> mp3 =new HashMap<>();
@@ -420,11 +413,14 @@ class CourseMan {
 							}
 							break;
 					case 3: stud3.availableTests(OOP); 
+							System.out.print("\n\n");
 							break;
 					case 4: stud3.viewEnrolledCourse(); 
+							System.out.print("\n\n");
 							break;
 					case 5: Student.allRegisteredStudents(OOP); 
-							break;
+							System.out.print("\n\n");
+					        break;
 					case 6: stud3.takeTest(OOP); 
 							break;
 					case 7: ; 
@@ -436,7 +432,13 @@ class CourseMan {
 			}
 		}  
 		Student.allRegisteredStudents(OOP); 
-		
+		for(int i =0; i<OOP.allTest.size();i++)
+		{
+			if(!OOP.allTest.get(i).testName.equals("Comprehensive_Examination"))
+			{
+				OOP.allTest.get(i).testSituation = "Unavailable";
+			}
+		} 
 		AD.createTest("Comprehensive_Examination",40.0f, 3, 15, OOP,ansc); 
 		System.out.println("The semester end is close by. All the students have to take the commprehensive exam"); 
 		System.out.println("For "+stud1.name);
