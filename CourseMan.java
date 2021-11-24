@@ -1,4 +1,5 @@
 import java.util.*;  
+import java.io.*;
 
 class Test{
     public String testName;
@@ -89,15 +90,30 @@ class Student{
     public String idNumber;
     public String emailAddress;
     public String country;
-    public  HashMap<String, Integer> marks = new HashMap<>(); 
+    public HashMap<String, Integer> marks = new HashMap<>(); 
+    public ArrayList<String> attemptStatus = new ArrayList<String>(); 
     Scanner in = new Scanner(System.in);
 
         
-    Student(String name,String idNumber,String emailAddress,String country){
+    Student(String name,String idNumber,String emailAddress,String country,Course c1){
         this.name=name;
         this.idNumber=idNumber;
         this.emailAddress=emailAddress + "@pilani.bits-pilani.ac.in";
-        this.country=country;
+        this.country=country; 
+        c1.nameofStudents.add(this.name); 
+        c1.idNoofStudentsenrolled.add(this.idNumber);
+        try{
+			FileWriter w= new FileWriter("StudentDetails.txt", true);
+
+			w.write(this.name + "\n");
+			w.write(this.idNumber + "\n");
+			w.write(this.emailAddress + "\n");
+			w.write(this.country+"\n");
+			w.close();
+		}
+		catch (Exception ae) {
+			System.out.println(ae);
+		}
     }
     
     int marksOfTest(String testName){
@@ -124,7 +140,10 @@ class Student{
     		t =c1.allTest.get(i); 
     		if(t.testSituation.equals("Available"))
     		{
-    			avlTest.add(t.testName);
+    			if(!this.attemptStatus.contains(t.testName))
+    			{
+    				avlTest.add(t.testName);
+    			}
     		} 
     		else
     		{
@@ -160,29 +179,43 @@ class Student{
     		System.out.println(avltest.get(i));
     	}
     	System.out.println("From the above List please enter the Test you wish to take");
-    	String attemptTest = in.next();
-    	for(int i =0; i<c1.allTest.size();i++)
+    	String attemptTest = in.next(); 
+    	if(avltest.contains(attemptTest))
     	{
-    		if(c1.allTest.get(i).testName.equals(attemptTest))
+    		for(int i =0; i<c1.allTest.size();i++)
     		{
-    			 index = i; 
-    		}
-    	} 
-    	t = c1.allTest.get(index);
-    	System.out.println("Please enter the answers for the questions"); 
-    	System.out.println("Enter a,b,c,d to answer the question or N is you don't want to attempt");
-    	System.out.println("Every quetion carries +4 for correct answer and -1 for wrong answer");
+    			if(c1.allTest.get(i).testName.equals(attemptTest))
+    			{
+    				index = i; 
+    			}
+    		} 
+    		t = c1.allTest.get(index); 
+    		System.out.println("The test name is " + t.testName );
+    		System.out.println("The test weightage is " + t.weightagePercent );
+    		System.out.println("The test duration is " + t.duration );
+    		System.out.println("The test has " + t.noOfQuestions +" questions.");
+    		System.out.println("Please enter the answers for the questions");
+    		System.out.println("Please enter the answers for the questions"); 
+    		System.out.println("Enter a,b,c,d to answer the question or N is you don't want to attempt");
+    		System.out.println("Every quetion carries +4 for correct answer and -1 for wrong answer");
     	
-    	for(int i=0; i<t.noOfQuestions;i++)
+    		for(int i=0; i<t.noOfQuestions;i++)
+    		{
+    			Character c;
+    			c = in.next().charAt(0);
+    			answers.add(c);
+    		} 
+    	
+    		int markgot = t.evaluatingTest(answers); 
+    		marks.put(attemptTest, markgot); 
+    		System.out.println("You got "+this.marks.get(t.testName)+" marks in the test you attempted"); 
+    		this.attemptStatus.add(attemptTest);
+    	
+    	} 
+    	else
     	{
-    		Character c;
-    		c = in.next().charAt(0);
-    		answers.add(c);
-    	} 
-    	
-    	int markgot = t.evaluatingTest(answers); 
-    	marks.put(attemptTest, markgot);
-    	
+    		System.out.println("You can not take a Test which is not in the list");
+    	} 	
     }
 }
 
@@ -191,10 +224,11 @@ class Teacher{
     String name;
     String email_id;
     ArrayList<String> courses; 
-    Teacher(String name, String email_id)
+    Teacher(String name, String email_id,ArrayList<String> courses)
     {
     	this.name = name; 
     	this.email_id = email_id+"@pilani.bits-pilani.ac.in";
+		this.courses=courses;
     }
  
     void courseDetails(){
@@ -213,7 +247,7 @@ class Teacher{
     void createTest(String testName, float weightagePercent , int duration , int noOfQuestions, Course c1,ArrayList<Character> anskey){
         Test t = new Test(testName,weightagePercent ,duration ,noOfQuestions); 
         c1.allTest.add(t); 
-        System.out.println("New Test Created");
+        System.out.println(t.testName+" Test Created by "+ this.name);
         t.setKey(anskey);
     }
 }
@@ -221,90 +255,145 @@ class Teacher{
 class CourseMan {
 
 	public static void main(String[] args) { 
-		//Scanner sc=new Scanner(System.in);
-		Course OOP = new Course("Object Oriented Programming",4,5102,3);
-		Teacher AD = new Teacher("Amit Dua", "amit.d12"); 
-		Student stud1 = new Student("Harshit","2020A7PS0057P","f20200057","India"); 
-		Student stud2 = new Student("Rachit","2020A7PS0033P","f20200033","India");
-        OOP.nameofStudents.add(stud1.name); 
-        OOP.idNoofStudentsenrolled.add(stud1.idNumber);
-        OOP.nameofStudents.add(stud2.name);
-        OOP.idNoofStudentsenrolled.add(stud2.idNumber); 
-        stud1.viewPersonalDetails();
+		Scanner in = new Scanner(System.in);
+		Course OOP = new Course("Object Oriented Programming",4,5102,3); 
+		ArrayList<String> arl=new ArrayList<>();
+		arl.add("OOP");
+		arl.add("DSA");
+		arl.add("DBMS");
+		Teacher AD = new Teacher("Amit Dua", "amit.d12",arl); 
+		Student stud1 = new Student("Harshit","2020A7PS0057P","f20200057","India",OOP); 
+		Student stud2 = new Student("Rachit","2020A7PS0033P","f20200033","India",OOP);
+        System.out.println("Details of the students registerd in the course are: ");
+		stud1.viewPersonalDetails();
         System.out.print("\n\n");
         stud2.viewPersonalDetails(); 
         System.out.print("\n\n"); 
+        System.out.println("The teacher "+ AD.name +" takes these courses");
         AD.courseDetails();
-        System.out.print("\n\n");
+        System.out.print("\n\n"); 
+        System.out.println(stud1.name+ " is reistered in the following course"); 
+        stud1.viewEnrolledCourse();
 		ArrayList<Character> ansq = new ArrayList<Character>();
 		ansq.add('a');
 		ansq.add('b');
 		ansq.add('c');
 		ansq.add('c');
 		ansq.add('d');
-		ansq.add('N');
+		ansq.add('a');
 		ansq.add('a');
 		ansq.add('b');
 		ansq.add('c');
-		ansq.add('N'); 
-		AD.createTest("Quiz",30.0f, 1, 10, OOP,ansq); 
-		stud1.takeTest(OOP); 
-		stud2.takeTest(OOP); 
+		ansq.add('a');    
         ArrayList<Character> ansm = new ArrayList<Character>();
-		ansm.add('a');
+        ansm.add('a');
 		ansm.add('b');
 		ansm.add('c');
-		ansm.add('N');
+		ansm.add('a');
 		ansm.add('d');
 		ansm.add('a');
 		ansm.add('a');
-		ansm.add('N');
+		ansm.add('a');
 		ansm.add('c');
 		ansm.add('d');
 		ansm.add('a');
 		ansm.add('b');
-		ansm.add('N');
-		ansm.add('N');
-		ansm.add('d');
-		AD.createTest("Midsemester Examination",30.0f, 2, 12, OOP,ansm);
-		stud1.takeTest(OOP); 
-		stud2.takeTest(OOP); 
+		ansm.add('b');
+		ansm.add('c');
+		ansm.add('d'); 
         ArrayList<Character> ansc = new ArrayList<Character>();
-		ansc.add('a');
-		ansc.add('b');
-		ansc.add('c');
-		ansc.add('N');
-		ansc.add('N');
-		ansc.add('a');
-		ansc.add('a');
-		ansc.add('b');
-		ansc.add('c');
-		ansc.add('N');
-		ansc.add('a');
+        ansc.add('a');
 		ansc.add('b');
 		ansc.add('c');
 		ansc.add('c');
-		ansc.add('N');
+		ansc.add('c');
 		ansc.add('a');
 		ansc.add('a');
 		ansc.add('b');
-		ansc.add('N');
+		ansc.add('c');
+		ansc.add('a');
+		ansc.add('a');
+		ansc.add('b');
+		ansc.add('c');
+		ansc.add('c');
+		ansc.add('d');
+		ansc.add('a');
+		ansc.add('a');
+		ansc.add('b');
+		ansc.add('a');
 		ansc.add('d'); 
-		AD.createTest("Comprehensive Examination",40.0f, 3, 15, OOP,ansc); 
+		AD.createTest("Quiz",30.0f, 1, 10, OOP,ansq); 
+		System.out.println(stud1.name+" is taking a test in the "+OOP.nameCourse+" course."); 
 		stud1.takeTest(OOP); 
+		Student stud3;
+		String name ="",idno="",email="",country=""; 
+		System.out.println("Has any new student joined the course?(Yes/No)");
+		String newreg = in.next();
+		while(!newreg.equals("No"))
+		{
+			if(newreg.equals("Yes"))
+			{
+				System.out.println("Please enter the name of the student"); 
+				name = in.next(); 
+				System.out.println("Please enter the idno of the student"); 
+				idno = in.next(); 
+				System.out.println("Please enter the email initials(i.e. till @) of the student"); 
+				email = in.next(); 
+				System.out.println("Please enter the country of the student"); 
+				country = in.next(); 
+				break;
+			} 
+			else
+			{
+				System.out.println("~_~ You had to enter Yes/No"); 
+				System.out.println("Has any new student joined the course?(Yes/No)");
+				newreg = in.next();
+			}
+		}
+		stud3 = new Student(name,idno,email,country,OOP); 
+		if(!stud3.name.equals(""))
+		{
+			System.out.println(stud3.name+ " should take the quiz now.");
+			stud3.takeTest(OOP);
+		}
+		AD.createTest("Midsemester Examination",30.0f, 2, 12, OOP,ansm);
+		System.out.println("Well now is the midsem exams are also available."); 
+		System.out.println("Students have to take the test"); 
+		System.out.println("For "+stud1.name);
+		stud1.takeTest(OOP);
+		System.out.println("For "+stud2.name);
 		stud2.takeTest(OOP); 
-        Student.allRegisteredStudents(OOP);
-        System.out.print("\n\n");
-        ArrayList<String> avltest = stud1.availableTests(OOP);
-        for(int i =0; i<avltest.size();i++)
-    	{
-    		System.out.println(avltest.get(i));
-    	} 
-        Map<String,Integer> mp =new HashMap<>();
-        mp=AD.viewMarks(stud2);
-        System.out.println(mp);
+		for(int i =0; i<OOP.allTest.size();i++)
+		{
+			if(!OOP.allTest.get(i).testName.equals("Comprehensive Examination"))
+			{
+				OOP.allTest.get(i).testSituation = "Unavailable";
+			}
+		}
+		AD.createTest("Comprehensive Examination",40.0f, 3, 15, OOP,ansc); 
+		System.out.println("The semester end is close by. All the students have to take the commprehensive exam"); 
+		stud1.takeTest(OOP);
+		stud2.takeTest(OOP);
+		if(!stud3.name.equals(""))
+		{
+			stud3.takeTest(OOP);
+		}
+		Student.allRegisteredStudents(OOP);
         System.out.print("\n\n"); 
-        stud1.viewEnrolledCourse();
-        
+        Map<String,Integer> mp1 =new HashMap<>();
+        mp1=AD.viewMarks(stud1);
+        System.out.println(mp1);
+        System.out.print("\n\n");
+        Map<String,Integer> mp2 =new HashMap<>();
+        mp2=AD.viewMarks(stud2);
+        System.out.println(mp2);
+        System.out.print("\n\n"); 
+        if(!stud3.name.equals(""))
+		{
+        	Map<String,Integer> mp3 =new HashMap<>();
+            mp3=AD.viewMarks(stud3);
+            System.out.println(mp3);
+            System.out.print("\n\n");
+		}        
 	}
 }
