@@ -45,24 +45,12 @@ class Test{
         return marks;
     }
 }
- 
-class TestDetails{
-    public String name;
-	public String attemptStatus;
-    public float marks;	
-    
-    TestDetails()
-    {
-    	attemptStatus = "Unattempted"; 
-    	marks = 0; 
-    }
- }
+
 class CourseDetails{
 	public String nameCourse; 
 	public int unitsCourse; 
 	public int Classroom; 
 	public List<String> Components = new LinkedList<String>(); 
-	public List<String> topics = new LinkedList<String>(); 
 	public List<String> idNoofStudentsenrolled = new ArrayList<String>(); 
 	public List<String> nameofStudents = new ArrayList<String>(); 
 	
@@ -77,6 +65,7 @@ class CourseDetails{
 class Course extends CourseDetails{
 	public int no_of_students;
 	public List<Test> allTest = new ArrayList<Test>();  
+	public List<String> topics = new LinkedList<String>();
 	
 	Course(String nameCourse,int unitsCourse,int Classroom, int no_of_students)
 	{
