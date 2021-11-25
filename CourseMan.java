@@ -123,12 +123,12 @@ class Student{
          if(testName.equals("Midsemester_Examination"))
          {
             return marks.get("Midsemester_Examination");
-        }
-        if(testName.equals("Comprehensive_Examination"))
-        {
+         }
+         if(testName.equals("Comprehensive_Examination"))
+         {
             return marks.get("Comprehensive_Examination");
-        }
-        else
+         }
+         else
         	return 0;
     }
     public ArrayList<String> availableTests(Course c1){ 
@@ -180,8 +180,14 @@ class Student{
     	{
     		System.out.println(avltest.get(i));
     	}
-    	System.out.println("From the above List please enter the Test you wish to take");
+    	System.out.println("From the above List please enter the Test you wish to take or None if you don't wish to take any.");
     	String attemptTest = in.next(); 
+    	while(!avltest.contains(attemptTest) && !attemptTest.equals("None"))
+    	{
+        	System.out.println("You can not take a Test which is not in the list"); 
+        	System.out.println("From the above List please enter the Test you wish to take or None if you don't wish to take any.");
+        	attemptTest = in.next();
+    	}
     	if(avltest.contains(attemptTest))
     	{
     		for(int i =0; i<c1.allTest.size();i++)
@@ -220,8 +226,8 @@ class Student{
     	} 
     	else
     	{
-    		System.out.println("You can not take a Test which is not in the list");
-    	} 	
+    		System.out.println("You have decide to not take the test now. You may take it later if its available");
+    	}	
     }
 }
 
@@ -401,7 +407,16 @@ class CourseMan {
 								System.out.print("\n\n");
 							}
 							break;
-					case 3: stud3.availableTests(OOP); 
+					case 3: {
+								ArrayList<String> temp = stud3.availableTests(OOP);
+								System.out.print("The avaailable test for "+stud3.name+" are");
+								Student.printWithDelays("...", TimeUnit.MILLISECONDS, 1000); 
+								System.out.println(""); 
+								for(int i =0; i<temp.size();i++)
+								{
+									System.out.println(temp.get(i));
+								}
+							}
 							System.out.print("\n\n");
 							break;
 					case 4: stud3.viewEnrolledCourse(); 
