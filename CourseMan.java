@@ -450,7 +450,12 @@ class CourseMan {
 		stud1.takeTest(OOP);
 		System.out.println("For "+stud2.name);
 		stud2.takeTest(OOP);
-        System.out.print("\n\n"); 
+        System.out.print("\n\n");
+        if(!stud3.name.equals(""))
+		{
+        	System.out.println("For "+stud3.name);
+    		stud3.takeTest(OOP);
+		}
         Map<String,Integer> mp1 =new HashMap<>();
         mp1=AD.viewMarks(stud1);
         System.out.println(mp1);
