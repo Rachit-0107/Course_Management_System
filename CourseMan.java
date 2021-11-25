@@ -199,7 +199,8 @@ class Student{
     		} 
     		t = c1.allTest.get(index);  
     		System.out.print("The details of the test are");
-    		Student.printWithDelays("...", TimeUnit.MILLISECONDS, 500);
+    		Student.printWithDelays("...", TimeUnit.MILLISECONDS, 500); 
+    		System.out.println();
     		System.out.println("The test name is " + t.testName );
     		System.out.println("The test weightage is " + t.weightagePercent );
     		System.out.println("The test duration is " + t.duration );
